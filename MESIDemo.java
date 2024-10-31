@@ -24,7 +24,7 @@ public class MESIDemo extends Application {
         dataBus.setStroke(Color.RED);
         dataBus.setStrokeWidth(5);
 
-        addressBus = new Line(0, 0, 300, 0);  // Línea horizontal para el bus de direcciones
+        addressBus = new Line(0, 0, 500, 0);  // Línea horizontal para el bus de direcciones
         addressBus.setStroke(Color.BLUE);
         addressBus.setStrokeWidth(5);
         
@@ -41,7 +41,7 @@ public class MESIDemo extends Application {
         root.add(cpuBox, 0, 1);
 
         // Configurar la escena y mostrar
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 600, 600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("MESI Protocol Simulation");
         primaryStage.show();

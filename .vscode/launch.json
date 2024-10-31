@@ -6,24 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
+            "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "MESIDemo",
+            "name": "Launch MESIDemo",
             "request": "launch",
             "mainClass": "MESIDemo",
-            "projectName": "MESI-Protocol-CPU_ec19b6c7"
-        },
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "MesiCPUs.src.App",
-            "projectName": "MESI-Protocol-CPU_ec19b6c7",
-            "vmArgs": "--module-path \"C:/Program Files/Java/javafx-sdk-23.0.1/lib\" --add-modules javafx.controls,javafx.fxml"
+            "projectName": "proyectoArqui2_2c5bdc80",
+            "vmArgs": "--module-path \"C:/Program Files/Java/javafx-sdk-23.0.1/lib\" --add-modules=javafx.controls,javafx.fxml"
         }
     ]
 }

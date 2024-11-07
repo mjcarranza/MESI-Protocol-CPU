@@ -1,13 +1,20 @@
-public class PE {
+import java.util.Scanner;
+public class PE implements Runnable {
     private long[] registers;
     private long[] sharedMemory;
     private int programCounter;
     private String[] program;
+    private String name;
+    private final Object stepperLock;  // Bloqueo compartido entre PEs y Multiprocessor
+    //private Scanner scanner;
 
-    public PE(long[] sharedMemory) {
+    public PE(long[] sharedMemory,String name,Object stepperLock) {
         this.registers = new long[4]; // Inicializa los registros
         this.sharedMemory = sharedMemory;
         this.programCounter = 0;
+        this.name = name;
+        //this.scanner = new Scanner(System.in);
+        this.stepperLock = stepperLock;
     }
 
     public void loadProgram(String[] program) {
@@ -16,7 +23,17 @@ public class PE {
 
     public void execute() {
         while (programCounter < program.length) {
+            //System.out.println("Presiona Enter para ejecutar la instrucción " + programCounter);
+            //scanner.nextLine();  // Espera a que el usuario presione Enter
             System.out.println(programCounter);
+            synchronized (stepperLock) {
+                try {
+                    // Espera la señal del Multiprocessor para continuar
+                    stepperLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             //System.out.println(program.length);
             String instruction = program[programCounter];
             executeInstruction(instruction);
@@ -78,5 +95,12 @@ public class PE {
                 }
         }
         programCounter++;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Iniciando " + name);
+        execute();  // Método de ejecución de instrucciones
+        System.out.println("Finalizando " + name);
     }
 }

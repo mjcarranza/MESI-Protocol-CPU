@@ -14,6 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class MESIDemo extends Application {
 
@@ -35,6 +37,7 @@ public class MESIDemo extends Application {
 
     private Label infoLabel;
 
+    @SuppressWarnings("unused")
     @Override
     public void start(Stage primaryStage) {
         // Configuración del layout principal
@@ -115,11 +118,11 @@ public class MESIDemo extends Application {
 
         // Crear etiquetas para los buses
         Label dataBusLabel = new Label("Data Bus");
-        dataBusLabel.setTextFill(Color.BLACK); // Establecer el color de texto de la etiqueta del bus de datos
+        dataBusLabel.setTextFill(Color.RED); // Establecer el color de texto de la etiqueta del bus de datos
         Label addressBusLabel = new Label("Address Bus");
-        addressBusLabel.setTextFill(Color.BLACK); // Establecer el color de texto de la etiqueta del bus de direcciones
+        addressBusLabel.setTextFill(Color.GREEN); // Establecer el color de texto de la etiqueta del bus de direcciones
         Label sharedBusLabel = new Label("Shared Bus");
-        sharedBusLabel.setTextFill(Color.BLACK); // Establecer el color de texto de la etiqueta del bus compartido
+        sharedBusLabel.setTextFill(Color.BLUEVIOLET); // Establecer el color de texto de la etiqueta del bus compartido
 
         // Agregar etiquetas y buses al layout
         VBox busBox = new VBox(5, dataBusLabel, dataBus, addressBusLabel, addressBus, sharedBusLabel, sharedBus);
@@ -250,50 +253,53 @@ public class MESIDemo extends Application {
 
         }
         root.add(cpuRow, 0, 5); // Agregar la fila de procesadores en la siguiente fila del layout
-
+       
+        Button stepButton = new Button("Step");  // boton para ejecucion por pasos
+        
+        stepButton.setOnAction(e -> onRead()); // Configurar eventos de botón
 
         // Crear y configurar la etiqueta de "Memoria Principal"
         infoLabel = new Label("CPU Information: ");
         infoLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         // Centramos la etiqueta solo horizontalmente en la pantalla usando un HBox
+        HBox btnBox = new HBox(stepButton);
+        btnBox.setAlignment(Pos.CENTER);  // Solo horizontalmente
+        btnBox.setStyle("-fx-padding: 10;");
+        root.add(btnBox, 0, 6); // Agregar en la primera fila
+
+        // Centramos la etiqueta solo horizontalmente en la pantalla usando un HBox
         HBox infoLabelBox = new HBox(infoLabel);
         infoLabelBox.setAlignment(Pos.CENTER);  // Solo horizontalmente
-        root.add(infoLabelBox, 0, 6); // Agregar en la primera fila
+        root.add(infoLabelBox, 0, 7); // Agregar en la primera fila
 
 
         // Configurar la escena y mostrar
-        Scene scene = new Scene(root, 725, 800);
+        Scene scene = new Scene(root, 725, 850); // coordenadas (x,y)
         primaryStage.setScene(scene);
         primaryStage.setTitle("MESI Protocol Simulation");
         primaryStage.show(); 
     }
 
     // Método para crear controles de lectura/escritura para cada CPU
-    @SuppressWarnings("unused")
     private VBox createCPUControls(int cpuNumber) {
+        // Cargar imagen desde recursos o sistema de archivos
+        Image image = new Image("file:cpu.png");
+
+        // Crear ImageView y configurar propiedades
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(140);
+        imageView.setFitHeight(140);
+        imageView.setPreserveRatio(true);
+
         VBox cpuBox = new VBox(5); // Espacio entre cada par de botones dentro del CPU
-
-        for (int i = 0; i < 4; i++) {  // Crear 4 pares de botones de lectura/escritura
-            final int pairNumber = i; // Variable local efectivamente final
-            Button readButton = new Button("Read A" + pairNumber);
-            Button writeButton = new Button("Write A" + pairNumber);
-
-            // Configurar eventos de botón
-            readButton.setOnAction(e -> onRead(cpuNumber, pairNumber));
-            writeButton.setOnAction(e -> onWrite(cpuNumber, pairNumber));
-
-            // Agregar el par de botones en un HBox
-            HBox buttonPair = new HBox(5, readButton, writeButton);
-            buttonPair.setAlignment(Pos.CENTER_LEFT); // Solo horizontal
-            cpuBox.getChildren().add(buttonPair);
-        }
 
         // Crear una etiqueta de identificación del procesador
         Label cpuLabel = new Label("Processor " + cpuNumber);
         cpuLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         
         // Agregar la etiqueta debajo de los botones
+        cpuBox.getChildren().add(imageView);
         cpuBox.getChildren().add(cpuLabel);
 
         // Establecer el borde del CPU
@@ -362,26 +368,28 @@ public class MESIDemo extends Application {
     }
 
     // Acción de lectura
-    private void onRead(int cpuNumber, int pairNumber) {
+    private void onRead() {
 
         // llamar funcion get para obtener newState, newAddress y newData, etc. (sutituir los valores en el IF)    -------------------------------------------------
-
+        /* 
         Label[] labels = cacheLabelsMap.get(cpuNumber); // obtener el arreglo de etiquetas correspondiente al cpuNumber
         if (labels != null && pairNumber >= 0 && pairNumber < labels.length) {
             labels[pairNumber].setText("State: " + "E" + " | Addr: A" + pairNumber + " | Data: " + "4");
         }
+        */
 
         //System.out.println("CPU " + cpuNumber + " - Read operation to address A" + pairNumber);
         
         // Agregar logica para cada lectura (tomar en cuenta todos los posibles casos) 
         infoLabel.setTextFill(Color.RED);
-        infoLabel.setText("CPU Information: CPU " + cpuNumber + " - Read operation to address A" + pairNumber);
+        infoLabel.setText("CPU Information: CPU " + "[cpuNumber]" + " - Read operation to address A" + "[dirNumber]");
         addressBus.setStroke(Color.GREEN);  // Cambiar color del bus de dirección
         dataBus.setStroke(Color.RED);     // Cambiar color del bus de datos
         sharedBus.setStroke(Color.BLUEVIOLET);   // Cambiar color del bus compartido
     }
 
     // Acción de escritura
+    /* 
     private void onWrite(int cpuNumber, int pairNumber) {
         System.out.println("CPU " + cpuNumber + " - Write operation to address A" + pairNumber);
         
@@ -392,8 +400,30 @@ public class MESIDemo extends Application {
         dataBus.setStroke(Color.RED);    // Cambiar color del bus de datos
         sharedBus.setStroke(Color.BLUEVIOLET);  // Cambiar color del bus compartido
     }
+    */
 
     public static void main(String[] args) {
         launch(args);
     }
 }
+
+
+
+
+/*
+ * for (int i = 0; i < 4; i++) {  // Crear 4 pares de botones de lectura/escritura
+            final int pairNumber = i; // Variable local efectivamente final
+            Button readButton = new Button("Read A" + pairNumber);
+            Button writeButton = new Button("Write A" + pairNumber);
+
+            // Configurar eventos de botón
+            readButton.setOnAction(e -> onRead(cpuNumber, pairNumber));
+            writeButton.setOnAction(e -> onWrite(cpuNumber, pairNumber));
+
+            // Agregar el par de botones en un HBox
+            HBox buttonPair = new HBox(5, readButton, writeButton);
+            buttonPair.setAlignment(Pos.CENTER_LEFT); // Solo horizontal
+            cpuBox.getChildren().add(buttonPair);
+        }
+ * 
+ */

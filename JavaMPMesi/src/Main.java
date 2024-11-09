@@ -28,9 +28,8 @@
 
         
     }
-}*/
-
-
+}
+*/
 public class Main {
     public static void main(String[] args) {
         Multiprocessor multiprocessor = new Multiprocessor();
@@ -85,7 +84,7 @@ public class Main {
                 "STORE REG1 100",
                 "STORE REG2 25",
                 "INC REG1",
-                
+
             }
         };
 

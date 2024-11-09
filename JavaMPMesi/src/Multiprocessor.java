@@ -17,25 +17,7 @@ public class Multiprocessor {
             processors[i].loadProgram(programs[i]);
         }
     }
-    /* 
-    public void execute() {
-        Thread[] threads = new Thread[4];
-        for (int i = 0; i < 4; i++) {
-            threads[i] = new Thread(processors[i]);
-            threads[i].start();  // Inicia cada hilo para cada PE
-        }
-
-        // Espera a que todos los hilos terminen
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("Todos los procesadores han terminado su ejecución.");
-    }*/
+   
     public void execute() {
         Thread[] threads = new Thread[4];
         for (int i = 0; i < 4; i++) {

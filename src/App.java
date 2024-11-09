@@ -1,5 +1,4 @@
 public class App {
-    //Bus bus = new Bus();
     CPU cpu[] = new CPU[3];
     Memory memory;
 

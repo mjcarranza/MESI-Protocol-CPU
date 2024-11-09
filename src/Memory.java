@@ -43,14 +43,14 @@ public class Memory implements BusObserver{
                 memoryLineSearched = searchAddressInMemory(Bus.getAddress());  
             }
 
-            System.out.println("Revisando memoria...");
+            System.out.println("Memoria: Revisando memoria...");
             getMemoryInfo();
 
             isDataUpdateNeeded = false;
-            System.out.println("Enviando dato en bus...");
+            System.out.println("Memoria: Compartiendo al bus de datos...");
             Bus.setData(memoryLineSearched.getData());
             isDataUpdateNeeded = true;
-            System.out.println("Enviando a Cache para actualizar su estado a exclusive...");
+            System.out.println("Memoria: Utilizando el bus de compartidos...");
             Bus.setShared(false);
         }
         isAddressUpdateNeeded = true;    
@@ -61,7 +61,7 @@ public class Memory implements BusObserver{
         if (isDataUpdateNeeded) {
             MemoryLine memoryLineSearched = searchAddressInMemory(Bus.getAddress());
             memoryLineSearched.setData(Bus.getData());
-            System.out.println("Actualizando datos en memoria...");
+            System.out.println("Memoria: Actualizando datos en memoria...");
             getMemoryInfo();
             isAddressUpdateNeeded = false; 
         }       

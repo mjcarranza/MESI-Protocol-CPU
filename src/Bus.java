@@ -33,17 +33,17 @@ public class Bus {
     }
 
     // Setters
-    public static void setData(int data){
+    public static synchronized void setData(int data){
         Bus.data = data;
         notifyDataChange();
     }
 
-    public static void setAddress(byte address){
+    public static synchronized void setAddress(byte address){
         Bus.address = address;
         notifyAddressChange();
     }
 
-    public static void setShared(boolean shared){
+    public static synchronized void setShared(boolean shared){
         Bus.shared = shared;
         notifySharedChange();
     }

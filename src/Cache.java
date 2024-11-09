@@ -4,6 +4,7 @@ public class Cache implements BusObserver {
     private byte cacheIndex = 0;
     private CacheLine[] cacheLine = new CacheLine[cacheLenght];
     private boolean isAddressUpdateNeeded = true;
+    private boolean isDataUpdateNeeded = true;
     private boolean isSearchingOutside = false;
 
 
@@ -16,26 +17,26 @@ public class Cache implements BusObserver {
     }
 
     public void readCacheLine(byte address){
-        System.out.println("Leyendo cache...");
+        System.out.println("Cache: Leyendo cache...");
         CacheLine cacheLineSearched = searchAddressInCache(address);
         if (cacheLineSearched == null){ // No existe 
-            System.out.println("Address no encontrado...");
+            System.out.println("Cache: Direccion no encontrada");
             addAddressToCache(address);
             searchAddressOutside(address);
         }
         else if (cacheLineSearched.getState() == 'I'){ // Es invalido
-            System.out.println("Estado invalido...");
+            System.out.println("Cache: Direccion invalida");
             searchAddressOutside(address);
         }
 
-        System.out.println("Estado valido...");
+        System.out.println("Cache: Lectura finalizada");
         getCacheInfo();
         
     }
 
     private void searchAddressOutside(byte address) {
         isSearchingOutside = true;
-        System.out.println("Escribiendo address en bus...");
+        System.out.println("Cache: Escribiendo en el bus de direcciones...");
         isAddressUpdateNeeded = false;
         Bus.setAddress(address);
         isAddressUpdateNeeded = true;
@@ -43,22 +44,26 @@ public class Cache implements BusObserver {
 
     public void writeCacheLine(byte address, int data){
         readCacheLine(address);
+
+        System.out.println("Cache: Escrbiendo valor en cache...");
         CacheLine cacheLineSearched = searchAddressInCache(address);
         cacheLineSearched.setData(data);
-        System.out.println("Escrbiendo dato en cache (dato)...");
         getCacheInfo();
 
         if (cacheLineSearched.getState() == 'S') { // Otras caches tienen el dato
-            System.out.println("Compartiendo con memoria e invalidando caches externas");
+            System.out.println("Cache: Dato en multiples caches");
+            System.out.println("Cache: Compartiendo al bus de datos...");
+            isDataUpdateNeeded = false;
             Bus.setData(data);
+            isDataUpdateNeeded = true;
             cacheLineSearched.setState('E');
         }
         else { // Solo esta cache tiene este address
-            System.out.println("Solo se encontro dato en esta cache");
+            System.out.println("Cache: Solo se encontro dato en esta cache");
             cacheLineSearched.setState('M');
         }
 
-        System.out.println("Escribiendo en cache (estado)...");
+        System.out.println("Cache: Escrbiendo estado en cache...");
         getCacheInfo();
 
     }
@@ -90,54 +95,59 @@ public class Cache implements BusObserver {
             // La cache busca si tiene el address solicitado
             CacheLine cacheLineSearched = searchAddressInCache(Bus.getAddress());
 
-            System.out.println("Revisando cache...");
+            System.out.println("Cache: Revisando cache...");
             getCacheInfo();
 
             if(cacheLineSearched != null){ // Tiene el address
-                if(cacheLineSearched.getState() != 'I'){ // El dato esta actualizado, ToDo: no dejar que varias caches manden el dato si esta en estado S  
-                    System.out.println("Address encontrado, compartiendo a memoria e invalidando en caches externas...");
+                if(cacheLineSearched.getState() != 'I'){ // El dato esta actualizado
+                    System.out.println("Cache: Direccion encontrada");
+                    isDataUpdateNeeded = false;
+                    System.out.println("Cache: Compartiendo al bus de datos...");
                     Bus.setData(cacheLineSearched.getData()); // Se pone en el bus de datos para que la memoria lo guarde
-                    System.out.println("Actualizar dato en caches a shared");
+                    isDataUpdateNeeded = true;
+                    System.out.println("Cache: Actualizando estado a Shared...");
+                    cacheLineSearched.setState('S');
+                    System.out.println("Cache: Utilizando el bus de compartidos...");
                     Bus.setShared(true);
                 }
             }
         }
+        isAddressUpdateNeeded = true;
     }
 
     @Override
     public void dataBusUpdate() {
-        CacheLine cacheLineSearched = searchAddressInCache(Bus.getAddress());
-        if (cacheLineSearched != null) {
-            cacheLineSearched.setState('I');
+        if (isDataUpdateNeeded) {
+            CacheLine cacheLineSearched = searchAddressInCache(Bus.getAddress());
+            if (cacheLineSearched != null && cacheLineSearched.getData() != Bus.getData() && cacheLineSearched.getState() != 'I' && !isSearchingOutside) { // Si tiene el dato desactualizado
+                cacheLineSearched.setState('I');
 
-            System.out.println("Invalidando dato en cache...");
-            getCacheInfo();
+                System.out.println("Cache: Invalidando dato");
+                getCacheInfo();
+            }
         }
     }
 
     @Override
     public void sharedBusUpdate() {
-        CacheLine cacheLineSearched = searchAddressInCache(Bus.getAddress());
-        
-        System.out.println("Verificando actualizacion de cache...");
-        getCacheInfo();
+        isAddressUpdateNeeded = false;
 
-        if ((cacheLineSearched != null && cacheLineSearched.getData() == Bus.getData()) || isSearchingOutside) { // la cache tiene el mismo dato o lo quiere
+        if (isSearchingOutside) { // Espera recibir el valor de un dato
+            CacheLine cacheLineSearched = searchAddressInCache(Bus.getAddress());
             
             cacheLineSearched.setData(Bus.getData());
             if (Bus.getShared()) { // Viene de otra cache
-                System.out.println("Actualizando dato a shared...");
+                System.out.println("Cache: Actualizando estado a Shared...");
                 cacheLineSearched.setState('S');
             }
             else {  // Viene de memoria
-                System.out.println("Actualizando dato a exclusive...");
+                System.out.println("Cache: Actualizando estado a Exclusive...");
                 cacheLineSearched.setState('E');
             }
             isSearchingOutside = false;
-        }
 
-        System.out.println("Actualizacion finalizada de cache...");
-        getCacheInfo();
+            getCacheInfo();
+        }
     }
 
     public void getCacheInfo() {

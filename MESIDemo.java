@@ -1,12 +1,15 @@
 import java.util.HashMap;
 import java.util.Map;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -16,6 +19,8 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class MESIDemo extends Application {
 
@@ -27,15 +32,16 @@ public class MESIDemo extends Application {
     private Line shared0, shared1, shared2, shared3;
     private Line addr0, addr1, addr2, addr3;
     private Line data0, data1, data2, data3;
-    // lineas verticales entre cache y cpu
-    //private Line read0, read1, read2, read3;
-    //private Line write0, write1, write2, write3;
+    // Variable de instancia para el TextField
+    private TextArea  inputArea; 
     // Mapa para almacenar las etiquetas de cada bloque de caché
     private Map<Integer, Label[]> cacheLabelsMap = new HashMap<>();
     // Mapa para almacenar las líneas de cada CPU
     private Map<Integer, Line[]> cpuLinesMap = new HashMap<>();
-
+    private TableView<Statistic> statsTable;  // TableView para las estadísticas
+    private ObservableList<Statistic> statsData; // Lista de datos para la tabla
     private Label infoLabel;
+
 
     @SuppressWarnings("unused")
     @Override
@@ -44,7 +50,7 @@ public class MESIDemo extends Application {
         GridPane root = new GridPane();
         
         // Crear y configurar la etiqueta de "Memoria Principal"
-        Label memoryLabel = new Label("Memoria Principal");
+        Label memoryLabel = new Label("Main Memory");
         memoryLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         memoryLabel.setTextFill(Color.PURPLE);
 
@@ -274,11 +280,83 @@ public class MESIDemo extends Application {
         root.add(infoLabelBox, 0, 7); // Agregar en la primera fila
 
 
+        /////////////////////////////////////////////// CODIGO PARA LA COLUMNA 2 DEL GRID /////////////////////////////////////
+        
+        // Crear Label y TextField para la columna 2
+        Label inputLabel = new Label("Enter Your Code Here:");
+        inputLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        inputArea = new TextArea();  // Instancia del TextArea
+        inputArea.setPromptText("Code...");
+        inputArea.setPrefWidth(450);  // Ancho preferido
+        inputArea.setPrefHeight(100); // Altura preferida (para varias líneas)
+        inputArea.setMinHeight(100);     // Altura mínima
+        inputArea.setMaxHeight(100);     // Altura máxima
+
+        // Alinear el contenido de la columna 2
+        VBox inputBox = new VBox(10, inputArea);
+        inputBox.setAlignment(Pos.CENTER_LEFT);
+        root.add(inputLabel, 2, 0);
+        root.add(inputBox, 2, 1);
+
+        // Crear y agregar botón para mostrar el valor ingresado
+        Button showInputButton = new Button("Load Code");
+        showInputButton.setOnAction(e -> printInputValue()); // Llama a la función al hacer clic
+        root.add(showInputButton, 2, 2); // Agregar el botón debajo del TextField
+
+
+        // Crear y configurar el TableView para mostrar estadísticas
+        statsTable = new TableView<>();
+        statsTable.setPrefWidth(300);
+        
+        // Crear columnas
+        TableColumn<Statistic, String> nameColumn = new TableColumn<>("Stat");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setPrefWidth(150);
+
+        TableColumn<Statistic, Integer> valueColumn = new TableColumn<>("Value");
+        valueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        valueColumn.setPrefWidth(100);
+
+        // Agregar columnas al TableView
+        statsTable.getColumns().add(nameColumn);
+        statsTable.getColumns().add(valueColumn);
+
+        // Añadir algunos datos de ejemplo
+        ObservableList<Statistic> statsData = FXCollections.observableArrayList(
+            new Statistic("Cache Misses", 0),
+            new Statistic("Cache Hits", 0),
+            new Statistic("Read Requests", 0),
+            new Statistic("Write Requests", 0)
+        );
+        statsTable.setItems(statsData);
+
+        statsTable.setPrefHeight(150); // Altura preferida (para varias líneas)
+        statsTable.setMinHeight(150);     // Altura mínima
+        statsTable.setMaxHeight(150);     // Altura máxima
+
+        // Alinear y agregar el TableView al GridPane
+        VBox statsBox = new VBox(10, new Label("System Statistics"), statsTable);
+        statsBox.setAlignment(Pos.CENTER);
+        // Posicionar el VBox en columna 2, fila 3, y combinar filas 3 y 4
+        root.add(statsBox, 2, 3);          // Agregar en columna 2, fila 3
+        GridPane.setRowSpan(statsBox, 2);  // Combinar filas 3 y 4 para el TableView
+
+
+        /////////////////////// CONFIGURACION DE LA ESCENA ///////////////////////
+
+
         // Configurar la escena y mostrar
-        Scene scene = new Scene(root, 725, 850); // coordenadas (x,y)
+        Scene scene = new Scene(root, 1200, 850); // coordenadas (x,y)
         primaryStage.setScene(scene);
         primaryStage.setTitle("MESI Protocol Simulation");
         primaryStage.show(); 
+    }
+
+    // Función para obtener y mostrar el texto ingresado en consola
+    public void printInputValue() {
+        String inputText = inputArea.getText();
+        System.out.println("Valor ingresado: " + inputText);
+        inputArea.clear(); // Borrar el texto del TextField
     }
 
     // Método para crear controles de lectura/escritura para cada CPU
@@ -344,6 +422,18 @@ public class MESIDemo extends Application {
         );
     
         return cacheDataBox;
+    }
+
+    // Función para actualizar una estadística específica
+    public void updateStatistic(String statName, int newValue) {
+        // Buscar la estadística en la lista y actualizar su valor
+        for (Statistic stat : statsData) {
+            if (stat.getName().equals(statName)) {
+                stat.setValue(newValue); // Actualizar el valor
+                statsTable.refresh(); // Refrescar la tabla para mostrar el cambio
+                break;
+            }
+        }
     }
 
     // Funcion para la creacion de lineas entre cache y cpu

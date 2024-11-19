@@ -1,3 +1,5 @@
+package src;
+
 public class Statistic {
     private String name;
     private int value;

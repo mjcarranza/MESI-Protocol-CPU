@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Line?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import src.Statistic?>
+<GridPane fx:id="root" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="src.Controller"
+          prefHeight="400.0" prefWidth="600.0">
+    <padding>
+        <Insets left="20"></Insets>
+    </padding>
+
+    <HBox fx:id="memoryLabelBox" alignment="CENTER" GridPane.rowIndex="0"
+          GridPane.columnIndex="0">
+        <Label fx:id="memoryLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;"
+               text="Main Memory" textFill="purple">
+        </Label>
+    </HBox>
+
+    <HBox fx:id="centeredMemoryBox" alignment="CENTER" GridPane.rowIndex="1"
+          GridPane.columnIndex="0">
+        <VBox fx:id="memoryDataBox" alignment="CENTER_LEFT"
+              style="-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+            <Label fx:id="memoryDataLabel1" style="-fx-font-size: 14px;"
+                   text="Addr: A0,   Data: 0">
+            </Label>
+            <Label fx:id="memoryDataLabel2" style="-fx-font-size: 14px;"
+                   text="Addr: A1,   Data: 0">
+            </Label>
+            <Label fx:id="memoryDataLabel3" style="-fx-font-size: 14px;"
+                   text="Addr: A2,   Data: 0">
+            </Label>
+            <Label fx:id="memoryDataLabel4" style="-fx-font-size: 14px;"
+                   text="Addr: A3,   Data: 0">
+            </Label>
+        </VBox>
+    </HBox>
+
+    <VBox fx:id="memoryBusLinesRow" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <HBox fx:id="memoryBusHBox" alignment="CENTER" spacing="50">
+            <Line fx:id="addressMemory" endY="50" stroke="black" strokeWidth="5">
+            </Line>
+            <Line fx:id="dataMemory" endY="50" stroke="black" strokeWidth="5">
+            </Line>
+        </HBox>
+    </VBox>
+
+    <VBox fx:id="busBox" spacing="5" alignment="CENTER" GridPane.columnIndex="0"
+          GridPane.rowIndex="3">
+        <VBox.margin>
+            <Insets bottom="20"></Insets>
+        </VBox.margin>
+        <Label fx:id="dataBusLabel" text="Data Bus" textFill="red"></Label>
+        <Line fx:id="dataBus" endX="670" stroke="black" strokeWidth="5"></Line>
+        <Label fx:id="addessBusLabel" text="Address Bus" textFill="green"></Label>
+        <Line fx:id="addressBus" endX="670" stroke="black" strokeWidth="5"></Line>
+        <Label fx:id="sharedBusLabel" text="Shared Bus" textFill="blueviolet"></Label>
+        <Line fx:id="sharedBus" endX="670" stroke="black" strokeWidth="5"></Line>
+    </VBox>
+
+    <VBox fx:id="busCashLinesRow" alignment="CENTER" GridPane.columnIndex="0"
+          GridPane.rowIndex="4">
+        <padding>
+            <Insets top="10" bottom="10"></Insets>
+        </padding>
+        <HBox fx:id="busCashHBox" spacing="30" alignment="CENTER">
+            <Line fx:id="shared0" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="address0" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="data0" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Region fx:id="space01" minWidth="40"></Region>
+            <Line fx:id="shared1" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="address1" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="data1" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Region fx:id="space12" minWidth="40"></Region>
+            <Line fx:id="shared2" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="address2" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="data2" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Region fx:id="space23" minWidth="40"></Region>
+            <Line fx:id="shared3" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="address3" endY="50" stroke="black" strokeWidth="5"></Line>
+            <Line fx:id="data3" endY="50" stroke="black" strokeWidth="5"></Line>
+        </HBox>
+    </VBox>
+
+    <HBox fx:id="cpuRow" spacing="20" alignment="CENTER" GridPane.columnIndex="0"
+          GridPane.rowIndex="5">
+        <VBox fx:id="cpuAndCacheBox0" spacing="10" alignment="CENTER">
+            <VBox fx:id="cacheDataBox0" spacing="5" alignment="CENTER"
+                  style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <Label fx:id="cacheLabel00" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel10" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel20" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel30" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel0" text="Cache 0" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+            <HBox fx:id="linesBox0" spacing="40" alignment="CENTER">
+                <Line fx:id="line10" endY="50" stroke="black" strokeWidth="5"></Line>
+                <Line fx:id="line20" endY="50" stroke="black" strokeWidth="5"></Line>
+            </HBox>
+            <VBox fx:id="cpuBox0" spacing="5" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <ImageView fx:id="imageView0" fitWidth="140" fitHeight="140" preserveRatio="true">
+                    <Image fx:id="image0" url="@../cpu.png"></Image>
+                </ImageView>
+                <Label fx:id="cpuLabel0" text="Processor 0" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+        </VBox>
+
+        <VBox fx:id="cpuAndCacheBox1" spacing="10" alignment="CENTER">
+            <VBox fx:id="cacheDataBox1" spacing="5" alignment="CENTER"
+                  style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <Label fx:id="cacheLabel01" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel11" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel21" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel31" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel1" text="Cache 1" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+            <HBox fx:id="linesBox1" spacing="40" alignment="CENTER">
+                <Line fx:id="line11" endY="50" stroke="black" strokeWidth="5"></Line>
+                <Line fx:id="line21" endY="50" stroke="black" strokeWidth="5"></Line>
+            </HBox>
+            <VBox fx:id="cpuBox1" spacing="5" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <ImageView fx:id="imageView1" fitWidth="140" fitHeight="140" preserveRatio="true">
+                    <Image fx:id="image1" url="@../cpu.png"></Image>
+                </ImageView>
+                <Label fx:id="cpuLabel1" text="Processor 1" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+        </VBox>
+
+        <VBox fx:id="cpuAndCacheBox2" spacing="10" alignment="CENTER">
+            <VBox fx:id="cacheDataBox2" spacing="5" alignment="CENTER"
+                  style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <Label fx:id="cacheLabel02" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel12" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel22" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel32" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel2" text="Cache 2" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+            <HBox fx:id="linesBox2" spacing="40" alignment="CENTER">
+                <Line fx:id="line12" endY="50" stroke="black" strokeWidth="5"></Line>
+                <Line fx:id="line22" endY="50" stroke="black" strokeWidth="5"></Line>
+            </HBox>
+            <VBox fx:id="cpuBox2" spacing="5" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <ImageView fx:id="imageView2" fitWidth="140" fitHeight="140" preserveRatio="true">
+                    <Image fx:id="image2" url="@../cpu.png"></Image>
+                </ImageView>
+                <Label fx:id="cpuLabel2" text="Processor 2" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+        </VBox>
+
+        <VBox fx:id="cpuAndCacheBox3" spacing="10" alignment="CENTER">
+            <VBox fx:id="cacheDataBox3" spacing="5" alignment="CENTER"
+                  style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <Label fx:id="cacheLabel03" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel13" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel23" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel33" text="State: I | Addr: A0 | Data: 0" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel3" text="Cache 3" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+            <HBox fx:id="linesBox3" spacing="40" alignment="CENTER">
+                <Line fx:id="line13" endY="50" stroke="black" strokeWidth="5"></Line>
+                <Line fx:id="line23" endY="50" stroke="black" strokeWidth="5"></Line>
+            </HBox>
+            <VBox fx:id="cpuBox3" spacing="5" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                <ImageView fx:id="imageView3" fitWidth="140" fitHeight="140" preserveRatio="true">
+                    <Image fx:id="image3" url="@../cpu.png"></Image>
+                </ImageView>
+                <Label fx:id="cpuLabel3" text="Processor 3" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
+            </VBox>
+        </VBox>
+    </HBox>
+
+    <HBox fx:id="infoLabelBox" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="7">
+        <Label fx:id="infoLabel" text="CPU Information: " style="-fx-font-size: 18px; -fx-font-weight: bold;"></Label>
+    </HBox>
+
+    <VBox fx:id="statsBox" spacing="10" alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
+        <Label fx:id="tableTitle" text="System Statistics"></Label>
+        <TableView fx:id="statsTable" prefWidth="300" prefHeight="150" minHeight="150" minWidth="150">
+            <columns>
+                <TableColumn fx:id="nameColumn" text="Stat" prefWidth="150">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="name"></PropertyValueFactory>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="valueColumn" text="Value" prefWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="value"></PropertyValueFactory>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
+</GridPane>

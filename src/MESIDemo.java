@@ -1,5 +1,14 @@
+package src;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -264,8 +273,9 @@ public class MESIDemo extends Application {
         // Center the label horizontally only on the screen using an HBox
         HBox btnBox = new HBox(stepButton);
         btnBox.setAlignment(Pos.CENTER);  // Horizontal only
-        btnBox.setStyle("-fx-padding: 10;");
         root.add(btnBox, 0, 6); // Add in the first row
+        // btnBox.setStyle("-fx-padding: 10;");
+        // root.add(btnBox, 0, 6); // Add in the first row
 
         // Center the label horizontally only on the screen using an HBox
         HBox infoLabelBox = new HBox(infoLabel);
@@ -342,7 +352,9 @@ public class MESIDemo extends Application {
         Scene scene = new Scene(root, 1200, 850); // coordinates (x, y)
         primaryStage.setScene(scene);
         primaryStage.setTitle("MESI Protocol Simulation");
-        primaryStage.show(); 
+        primaryStage.show();
+
+        startServer();
     }
 
     // Function to get and display entered text in console

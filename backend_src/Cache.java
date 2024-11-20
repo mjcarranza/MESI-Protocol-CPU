@@ -50,7 +50,7 @@ public class Cache implements BusObserver {
 
     private void addAddressToCache(short address) {
         cacheLine[cacheIndex].setAll('I', address, 0);
-        cacheIndex = (cacheIndex == cacheLenght) ? 0 : cacheIndex++;
+        cacheIndex = (cacheIndex == cacheLenght - 1) ? 0 : (byte)(cacheIndex + 1);
     }
 
     private void searchAddressOutside(short address) {

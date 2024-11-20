@@ -21,7 +21,7 @@ public class Memory implements BusObserver {
             milliseconds += millisecondsSearchingMemoryLine;
             if (memoryLine[i].getAddress() == address) {
                 if (isForSimulation) {
-                    SimulationHandler.simulateBehavior("Memory hit!", milliseconds);
+                    SimulationHandler.simulateBehavior(null, milliseconds);
                 }
                 return memoryLine[i];
             }
@@ -47,10 +47,10 @@ public class Memory implements BusObserver {
             MemoryLine memoryLineSearched = searchAddressInMemory(Bus.getAddress(), true);
 
             isDataUpdateNeeded = false;
-            Bus.setData(memoryLineSearched.getData());
+            Bus.setData(memoryLineSearched.getData(), (byte) -1);
             isDataUpdateNeeded = true;
 
-            Bus.setShared(false);
+            Bus.setShared(false, (byte) -1);
         }
         isAddressUpdateNeeded = true;
 

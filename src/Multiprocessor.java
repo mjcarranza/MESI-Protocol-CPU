@@ -8,7 +8,7 @@ public class Multiprocessor {
     public void loadPrograms(String[][] programs) {
         // Instancia y carga cada PE con su propio programa
         for (int i = 0; i < processors.length; i++) {
-            processors[i] = new PE((byte) (i + 1), stepperLock);
+            processors[i] = new PE((byte) i, stepperLock);
             processors[i].loadProgram(programs[i]);
         }
         memory = new Memory();
@@ -34,9 +34,7 @@ public class Multiprocessor {
                 for (int i = 0; i < 4; i++) {
                     processors[i].getCache().getCacheInfo();
                 }
-                Statistics.getStatisticsInfo();
             }
-
         }
     }
 }

@@ -18,8 +18,10 @@ public class Cache implements BusObserver {
         }
     }
 
-    public void readCacheLine(byte address) {
+    public void readCacheLine(byte address, boolean isWriting) {
         CacheLine cacheLineSearched = searchAddressInCache(address, true);
+        if (!isWriting)
+            SimulationHandler.simulateBehavior("SR" + cacheID, 0);
         if (cacheLineSearched == null) {
             addAddressToCache(address); // No existe
             cacheLineSearched = searchAddressInCache(address, false);
@@ -35,15 +37,13 @@ public class Cache implements BusObserver {
             milliseconds += millisecondsSearchingCacheLine;
             if (cacheLine[i].getAddress() == address) {
                 if (isForSimulation) {
-                    SimulationHandler.simulateBehavior("Cache #" + cacheID + ": Cache hit!", milliseconds);
-                    Statistics.addCacheHits();
+                    SimulationHandler.simulateBehavior("SH" + cacheID, milliseconds);
                 }
                 return cacheLine[i];
             }
         }
         if (isForSimulation) {
-            SimulationHandler.simulateBehavior("Cache #" + cacheID + ": Cache miss!", milliseconds);
-            Statistics.addCacheMisses();
+            SimulationHandler.simulateBehavior("SM" + cacheID, milliseconds);
         }
         return null;
     }
@@ -56,19 +56,19 @@ public class Cache implements BusObserver {
     private void searchAddressOutside(byte address) {
         isSearchingOutside = true;
         isAddressUpdateNeeded = false;
-        Bus.setAddress(address);
+        Bus.setAddress(address, cacheID);
         isAddressUpdateNeeded = true;
     }
 
     public void writeCacheLine(byte address, int data) {
-        readCacheLine(address);
-
+        readCacheLine(address, true);
+        SimulationHandler.simulateBehavior("SW" + cacheID, 0);
         CacheLine cacheLineSearched = searchAddressInCache(address, false);
         if (cacheLineSearched.getData() != data) {
             cacheLineSearched.setData(data);
             if (cacheLineSearched.getState() == 'S') { // Otras caches tienen el dato
                 isDataUpdateNeeded = false;
-                Bus.setData(data);
+                Bus.setData(data, cacheID);
                 isDataUpdateNeeded = true;
                 cacheLineSearched.setState('E');
 
@@ -87,11 +87,11 @@ public class Cache implements BusObserver {
             if (cacheLineSearched != null) { // Tiene el address
                 if (cacheLineSearched.getState() != 'I') { // El dato esta actualizado
                     isDataUpdateNeeded = false;
-                    Bus.setData(cacheLineSearched.getData()); // En el bus de datos para que la memoria lo guarde
+                    Bus.setData(cacheLineSearched.getData(), cacheID); // En el bus de datos para que la memoria lo guarde
                     isDataUpdateNeeded = true;
 
                     cacheLineSearched.setState('S');
-                    Bus.setShared(true);
+                    Bus.setShared(true, cacheID);
                 }
             }
         }
@@ -105,6 +105,7 @@ public class Cache implements BusObserver {
             if (cacheLineSearched != null && cacheLineSearched.getData() != Bus.getData()
                     && cacheLineSearched.getState() != 'I' && !isSearchingOutside) { // Si tiene el dato desactualizado
                 cacheLineSearched.setState('I');
+                SimulationHandler.simulateBehavior("SI" + cacheID, 0);
             }
         }
     }

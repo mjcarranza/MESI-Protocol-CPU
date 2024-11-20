@@ -103,7 +103,7 @@ public class PE implements Runnable {
     }
 
     public void read(byte address) {
-        cache.readCacheLine(address);
+        cache.readCacheLine(address, false);
     }
 
     public void write(byte address, int data) {

@@ -37,20 +37,32 @@ public class Bus {
     }
 
     // Setters
-    public static void setData(int data) {
-        SimulationHandler.simulateBehavior("BD", millisecondsUsingBus);
+    public static void setData(int data, byte cacheID) {
+        if (cacheID == -1) {
+            SimulationHandler.simulateBehavior("BDM", millisecondsUsingBus);
+        } else {
+            SimulationHandler.simulateBehavior("BD" + cacheID, millisecondsUsingBus);
+        }
         Bus.data = data;
         notifyDataChange();
     }
 
-    public static void setAddress(byte address) {
-        SimulationHandler.simulateBehavior("BA", millisecondsUsingBus);
+    public static void setAddress(byte address, byte cacheID) {
+        if (cacheID == -1) {
+            SimulationHandler.simulateBehavior("BAM", millisecondsUsingBus);
+        } else {
+            SimulationHandler.simulateBehavior("BA" + cacheID, millisecondsUsingBus);
+        }
         Bus.address = address;
         notifyAddressChange();
     }
 
-    public static void setShared(boolean shared) {
-        SimulationHandler.simulateBehavior("BS", millisecondsUsingBus);
+    public static void setShared(boolean shared, byte cacheID) {
+        if (cacheID == -1) {
+            SimulationHandler.simulateBehavior("BSM", millisecondsUsingBus);
+        } else {
+            SimulationHandler.simulateBehavior("BS" + cacheID, millisecondsUsingBus);
+        }
         Bus.shared = shared;
         notifySharedChange();
     }

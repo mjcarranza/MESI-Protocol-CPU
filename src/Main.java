@@ -1,70 +1,3 @@
-/* 
-public class Main {
-    public static void main(String[] args) {
-        Multiprocessor multiprocessor = new Multiprocessor();
-
-        // Load programs from file
-        //String[][] programs = loadProgramsFromFile("programs.txt");
-        
-        String[][] programs = {
-                {
-                        "LOAD REG0 10",
-                        "INC REG0",
-                        "INC REG0",
-                        "INC REG0",
-                        "STORE REG0 11",
-                        "label1_",
-                        "DEC REG0",
-                        "JNZ REG0 label1_",
-                        "STORE REG1 100",
-                        "STORE REG2 25"
-                },
-                {
-                        "LOAD REG0 10",
-                        "INC REG0",
-                        "INC REG0",
-                        "INC REG0",
-                        "STORE REG0 11",
-                        "label1_",
-                        "DEC REG0",
-                        "JNZ REG0 label1_",
-                        "STORE REG1 100",
-                        "STORE REG2 25"
-                },
-                {
-                        "LOAD REG0 10",
-                        "INC REG0",
-                        "INC REG0",
-                        "INC REG0",
-                        "STORE REG0 11",
-                        "label1_",
-                        "DEC REG0",
-                        "JNZ REG0 label1_",
-                        "STORE REG1 100",
-                        "STORE REG2 25"
-                },
-                {
-                        "LOAD REG0 10",
-                        "INC REG0",
-                        "INC REG0",
-                        "INC REG0",
-                        "STORE REG0 11",
-                        "label1_",
-                        "DEC REG0",
-                        "JNZ REG0 label1_",
-                        "STORE REG1 100",
-                        "STORE REG2 25",
-                        "INC REG1",
-
-                }
-
-        };
-        
-
-        multiprocessor.loadPrograms(programs);
-        multiprocessor.execute();
-    }
-}*/
 import java.io.*;
 import java.util.*;
 
@@ -73,7 +6,7 @@ public class Main {
         Multiprocessor multiprocessor = new Multiprocessor();
 
         // Load programs from file
-        String[][] programs = loadProgramsFromFile("programs.txt");
+        String[][] programs = loadProgramsFromFile("src/programs.txt");
 
         multiprocessor.loadPrograms(programs);
         multiprocessor.execute();

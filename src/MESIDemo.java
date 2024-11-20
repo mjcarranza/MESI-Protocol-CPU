@@ -1,13 +1,7 @@
 package src;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -262,18 +256,17 @@ public class MESIDemo extends Application {
         }
         root.add(cpuRow, 0, 5); // Add processor row to the next layout row
 
-        Button stepButton = new Button("Step");  // Button for step-by-step execution
+        // Button stepButton = new Button("Step");  // Button for step-by-step execution
         
-        stepButton.setOnAction(e -> onRead()); // Set button event
+        // stepButton.setOnAction(e -> onRead()); // Set button event
 
         // Create and configure the "Main Memory" label
         infoLabel = new Label("CPU Information: ");
         infoLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         // Center the label horizontally only on the screen using an HBox
-        HBox btnBox = new HBox(stepButton);
-        btnBox.setAlignment(Pos.CENTER);  // Horizontal only
-        root.add(btnBox, 0, 6); // Add in the first row
+        // HBox btnBox = new HBox(stepButton);
+        // btnBox.setAlignment(Pos.CENTER);  // Horizontal only
         // btnBox.setStyle("-fx-padding: 10;");
         // root.add(btnBox, 0, 6); // Add in the first row
 
@@ -325,12 +318,12 @@ public class MESIDemo extends Application {
         statsTable.getColumns().add(valueColumn);
 
         // Add some example data
-        ObservableList<Statistic> statsData = FXCollections.observableArrayList(
+        /*ObservableList<Statistic> statsData = FXCollections.observableArrayList(
             new Statistic("Cache Misses", 0),
             new Statistic("Cache Hits", 0),
             new Statistic("Read Requests", 0),
             new Statistic("Write Requests", 0)
-        );
+        );*/
         statsTable.setItems(statsData);
 
         statsTable.setPrefHeight(150); // Preferred height (for multiple lines)
@@ -354,7 +347,7 @@ public class MESIDemo extends Application {
         primaryStage.setTitle("MESI Protocol Simulation");
         primaryStage.show();
 
-        startServer();
+        // startServer();
     }
 
     // Function to get and display entered text in console
@@ -434,7 +427,7 @@ public class MESIDemo extends Application {
         // Find statistic in list and update its value
         for (Statistic stat : statsData) {
             if (stat.getName().equals(statName)) {
-                stat.setValue(newValue); // Update value
+                stat.setInvalidations(newValue); // Update value
                 statsTable.refresh(); // Refresh table to display change
                 break;
             }

@@ -100,6 +100,12 @@
                   style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
                 <Label fx:id="cacheLabel00" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel10" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel20" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel30" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel40" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel50" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel60" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel70" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel0" text="Cache 0" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
             </VBox>
             <HBox fx:id="linesBox0" spacing="40" alignment="CENTER">
@@ -119,6 +125,12 @@
                   style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
                 <Label fx:id="cacheLabel01" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel11" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel21" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel31" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel41" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel51" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel61" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel71" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel1" text="Cache 1" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
             </VBox>
             <HBox fx:id="linesBox1" spacing="40" alignment="CENTER">
@@ -138,6 +150,12 @@
                   style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
                 <Label fx:id="cacheLabel02" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel12" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel22" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel32" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel42" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel52" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel62" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel72" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel2" text="Cache 2" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
             </VBox>
             <HBox fx:id="linesBox2" spacing="40" alignment="CENTER">
@@ -157,6 +175,12 @@
                   style="-fx-border-color: blue; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
                 <Label fx:id="cacheLabel03" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel13" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel23" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel33" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel43" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel53" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel63" text="" style="-fx-font-size: 12px;"></Label>
+                <Label fx:id="cacheLabel73" text="" style="-fx-font-size: 12px;"></Label>
                 <Label fx:id="cacheLabel3" text="Cache 3" style="-fx-font-weight: bold; -fx-font-size: 14px;"></Label>
             </VBox>
             <HBox fx:id="linesBox3" spacing="40" alignment="CENTER">
@@ -173,21 +197,44 @@
     </HBox>
 
     <HBox fx:id="buttonBox" alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="7">
+        <padding>
+            <Insets top="15"></Insets>
+        </padding>
         <Button fx:id="button" text="Next Step" alignment="CENTER"></Button>
     </HBox>
 
     <VBox fx:id="statsBox" spacing="10" alignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.rowSpan="2">
         <Label fx:id="tableTitle" text="System Statistics"></Label>
-        <TableView fx:id="statsTable" prefWidth="300" prefHeight="150" minHeight="150" minWidth="150">
+        <TableView fx:id="statsTable" prefWidth="450" prefHeight="175" minHeight="150" minWidth="150">
             <columns>
                 <TableColumn fx:id="nameColumn" text="Stat" prefWidth="150">
                     <cellValueFactory>
                         <PropertyValueFactory property="name"></PropertyValueFactory>
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn fx:id="valueColumn" text="Value" prefWidth="100">
+                <TableColumn fx:id="invalidationsColumn" text="Invalidations" prefWidth="100">
                     <cellValueFactory>
-                        <PropertyValueFactory property="value"></PropertyValueFactory>
+                        <PropertyValueFactory property="invalidations"></PropertyValueFactory>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="readRequests" text="Read Requests" prefWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="readRequests"></PropertyValueFactory>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="writeRequest" text="Write Requests" prefWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="writeRequest"></PropertyValueFactory>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="cacheMisses" text="C. Misses" prefWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="cacheMisses"></PropertyValueFactory>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="cacheHits" text="C. Hits" prefWidth="100">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="cacheHits"></PropertyValueFactory>
                     </cellValueFactory>
                 </TableColumn>
             </columns>

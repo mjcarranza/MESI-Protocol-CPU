@@ -3,8 +3,11 @@ package src;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
@@ -24,16 +27,19 @@ public class Controller implements Initializable {
     private TableView<Statistic> statsTable;
     @FXML
     private GridPane root;
+    @FXML
+    private Button button;
 
     private Server server;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ObservableList<Statistic> statsData = FXCollections.observableArrayList(
-                new Statistic("Cache Misses", 0),
-                new Statistic("Cache Hits", 0),
-                new Statistic("Read Requests", 0),
-                new Statistic("Write Requests", 0)
+                new Statistic("Cache 0", 0, 0, 0, 0, 0),
+                new Statistic("Cache 1", 0, 0, 0, 0, 0),
+                new Statistic("Cache 2", 0, 0, 0, 0, 0),
+                new Statistic("Cache 3", 0, 0, 0, 0, 0),
+                new Statistic("Total", 0, 0, 0, 0, 0)
         );
 
         this.statsTable.setItems(statsData);
@@ -47,19 +53,24 @@ public class Controller implements Initializable {
 
 
         this.server.receiveMessage(this.root);
+
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                server.sendMessage("1", root);
+            }
+        });
     }
 
     public static void handleMessage(String message, GridPane root) {
         if (message != null && !message.isEmpty()) {
             String firstChar = message.substring(0, 1);
+            clearBuses(root);
+            System.out.println(message);
 
             switch (firstChar) {
                 case "C":
-                    if (message.substring(1, 2).equals("a")){
-                        handleStats(message, root);
-                    } else {
-                        handleCaches(message, root);
-                    }
+                    handleCaches(message, root);
                     break;
                 case "M":
                     handleMainMemory(message, root);
@@ -67,10 +78,49 @@ public class Controller implements Initializable {
                 case "B":
                     handleBuses(message, root);
                     break;
-                default:
+                case "S":
                     handleStats(message, root);
+                    break;
             }
         }
+    }
+
+    public static void clearBuses(GridPane root) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                VBox busBox = (VBox) root.getChildren().get(3);
+
+                for (int i = 0; i < 6; i++) {
+                    if (i % 2 != 0) {
+                        Line busLine = (Line) busBox.getChildren().get(i);
+                        busLine.setStroke(Color.BLACK);
+                    }
+                }
+
+                VBox busCashLinesRow = (VBox) root.getChildren().get(4);
+                HBox busCashBox = (HBox) busCashLinesRow.getChildren().get(0);
+
+                for (int i = 0; i < 15; i++) {
+                    if (i !=3 && i!=7 && i!=11) {
+                        Line busLine = (Line) busCashBox.getChildren().get(i);
+                        busLine.setStroke(Color.BLACK);
+                    }
+                }
+
+                HBox cpuRow = (HBox) root.getChildren().get(5);
+
+                for (int i = 0; i < 4; i++) {
+                    VBox cpuAndCacheBox = (VBox) cpuRow.getChildren().get(i);
+
+                    HBox linesBox = (HBox) cpuAndCacheBox.getChildren().get(1);
+                    for (int j = 0; j < 2; j++) {
+                        Line line = (Line) linesBox.getChildren().get(j);
+                        line.setStroke(Color.BLACK);
+                    }
+                }
+            }
+        });
     }
 
     public static void handleCaches(String message, GridPane root) {
@@ -81,7 +131,7 @@ public class Controller implements Initializable {
 
                 String secondChar = message.substring(1, 2);
                 Integer cacheNumber = Integer.valueOf(secondChar);
-                VBox cpuAndCacheBox = (VBox) cpuRow.getChildren().get(cacheNumber - 1);
+                VBox cpuAndCacheBox = (VBox) cpuRow.getChildren().get(cacheNumber);
                 VBox cacheDataBox = (VBox) cpuAndCacheBox.getChildren().get(0);
                 Label newLabel = null;
                 Boolean isInCache = false;
@@ -111,9 +161,22 @@ public class Controller implements Initializable {
 
                 String labelString = "State: " + state + " | Addr: " + address + " | Data: " + data;
 
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 8; i++) {
                     Label currentLabel = (Label) cacheDataBox.getChildren().get(i);
-                    if (currentLabel.getText().contains(address)) {
+                    String actualAddress = "";
+                    Integer firstIndex = 17;
+                    if (!currentLabel.getText().isEmpty()) {
+                        while (true) {
+                            nextChar = currentLabel.getText().substring(firstIndex, firstIndex + 1);
+                            if (!nextChar.equals(" ")) {
+                                actualAddress = actualAddress + nextChar;
+                            } else {
+                                break;
+                            }
+                            firstIndex++;
+                        }
+                    }
+                    if (address.equals(actualAddress)) {
                         newLabel = currentLabel;
                         isInCache = true;
                         break;
@@ -125,7 +188,19 @@ public class Controller implements Initializable {
                 } else {
                     Label label0 = (Label) cacheDataBox.getChildren().get(0);
                     Label label1 = (Label) cacheDataBox.getChildren().get(1);
+                    Label label2 = (Label) cacheDataBox.getChildren().get(2);
+                    Label label3 = (Label) cacheDataBox.getChildren().get(3);
+                    Label label4 = (Label) cacheDataBox.getChildren().get(4);
+                    Label label5 = (Label) cacheDataBox.getChildren().get(5);
+                    Label label6 = (Label) cacheDataBox.getChildren().get(6);
+                    Label label7 = (Label) cacheDataBox.getChildren().get(7);
 
+                    label7.setText(label6.getText());
+                    label6.setText(label5.getText());
+                    label5.setText(label4.getText());
+                    label4.setText(label3.getText());
+                    label3.setText(label2.getText());
+                    label2.setText(label1.getText());
                     label1.setText(label0.getText());
                     label0.setText(labelString);
                 }
@@ -140,22 +215,54 @@ public class Controller implements Initializable {
             public void run() {
                 HBox centeredMemoryBox = (HBox) root.getChildren().get(1);
                 VBox memoryDataBox = (VBox) centeredMemoryBox.getChildren().getFirst();
-                Integer index = 0;
-                String address = message.substring(3, 5);
-                String data = message.substring(6);
+                Integer index = 3;
+                String address = "";
+                Boolean isInMemory = false;
+
+                while (true) {
+                    String nextChar = message.substring(index, index + 1);
+
+                    if (!nextChar.equals("|")) {
+                        address = address + nextChar;
+                    } else {
+                        index++;
+                        break;
+                    }
+                    index++;
+                }
+
+                String data = message.substring(index);
                 Label currentLabel = null;
 
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < memoryDataBox.getChildren().size(); i++) {
                     currentLabel = (Label) memoryDataBox.getChildren().get(i);
-                    if (currentLabel.getText().contains(address)) {
+                    String actualAddress = "";
+                    Integer firstIndex = 6;
+                    if (!currentLabel.getText().isEmpty()) {
+                        while (true) {
+                            String nextChar = currentLabel.getText().substring(firstIndex, firstIndex + 1);
+                            if (!nextChar.equals(",")) {
+                                actualAddress = actualAddress + nextChar;
+                            } else {
+                                break;
+                            }
+                            firstIndex++;
+                        }
+                    }
+                    if (address.equals(actualAddress) || currentLabel.getText().isEmpty()) {
+                        isInMemory = true;
                         break;
                     }
                 }
 
-                String newLabel = "Addr: " + address + ",   Data: " + data;
+                String newLabelText = "Addr: " + address + ",   Data: " + data;
 
-                if (currentLabel != null) {
-                    currentLabel.setText(newLabel);
+                if (currentLabel != null && isInMemory) {
+                    currentLabel.setText(newLabelText);
+                } else {
+                    Label newLabel = new Label(newLabelText);
+                    newLabel.setStyle("-fx-font-size: 14px;");
+                    memoryDataBox.getChildren().add(newLabel);
                 }
             }
         });
@@ -165,29 +272,101 @@ public class Controller implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                VBox busBox = (VBox) root.getChildren().get(3);
-
-                String busType = message.substring(1);
+                String busType = message.substring(1, 2);
+                Integer cacheNumber = null;
+                if (!message.substring(2).equals("M")) {
+                    cacheNumber = Integer.valueOf(message.substring(2));
+                }
                 Integer busIndex = 0;
+                Integer cacheIndex = -1;
+                Integer cpuIndex = 0;
                 Color busColor = Color.BLACK;
 
                 switch (busType) {
                     case "A":
+                        if (cacheNumber != null) {
+                            switch (cacheNumber) {
+                                case 0:
+                                    cacheIndex = 1;
+                                    break;
+                                case 1:
+                                    cacheIndex = 5;
+                                    break;
+                                case 2:
+                                    cacheIndex = 9;
+                                    break;
+                                case 3:
+                                    cacheIndex = 13;
+                                    break;
+                            }
+                        }
                         busIndex = 3;
+                        cpuIndex = 0;
                         busColor = Color.GREEN;
                         break;
                     case "D":
+                        if (cacheNumber != null) {
+                            switch (cacheNumber) {
+                                case 0:
+                                    cacheIndex = 2;
+                                    break;
+                                case 1:
+                                    cacheIndex = 6;
+                                    break;
+                                case 2:
+                                    cacheIndex = 10;
+                                    break;
+                                case 3:
+                                    cacheIndex = 14;
+                                    break;
+                            }
+                        }
                         busIndex = 1;
+                        cpuIndex = 1;
                         busColor = Color.RED;
                         break;
                     case "S":
+                        if (cacheNumber != null) {
+                            switch (cacheNumber) {
+                                case 0:
+                                    cacheIndex = 0;
+                                    break;
+                                case 1:
+                                    cacheIndex = 4;
+                                    break;
+                                case 2:
+                                    cacheIndex = 8;
+                                    break;
+                                case 3:
+                                    cacheIndex = 12;
+                                    break;
+                            }
+                        }
                         busIndex = 5;
+                        cpuIndex = -1;
                         busColor = Color.BLUEVIOLET;
                         break;
                 }
 
+                VBox busBox = (VBox) root.getChildren().get(3);
                 Line busLine = (Line) busBox.getChildren().get(busIndex);
                 busLine.setStroke(busColor);
+
+                if (cacheIndex >= 0) {
+                    VBox busCashLinesRow = (VBox) root.getChildren().get(4);
+                    HBox busCashHBox = (HBox) busCashLinesRow.getChildren().get(0);
+                    Line cacheLine = (Line) busCashHBox.getChildren().get(cacheIndex);
+                    cacheLine.setStroke(busColor);
+                }
+
+                if (cpuIndex >= 0 && cacheNumber!=null) {
+                    HBox cpuRow = (HBox) root.getChildren().get(5);
+                    VBox cpuAndCacheBox = (VBox) cpuRow.getChildren().get(cacheNumber);
+                    HBox linesBox = (HBox) cpuAndCacheBox.getChildren().get(1);
+                    Line cpuLine = (Line) linesBox.getChildren().get(cpuIndex);
+                    cpuLine.setStroke(busColor);
+                }
+
             }
         });
     }
@@ -196,29 +375,51 @@ public class Controller implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                String stat = message.substring(10);
-                Integer rowIndex = 0;
+                VBox statsBox = (VBox) root.getChildren().get(7);
+                TableView<Statistic> statsTable = (TableView<Statistic>) statsBox.getChildren().get(1);
 
-                switch (stat){
-                    case "Cache miss!":
-                        rowIndex = 0;
+                String type = message.substring(1, 2);
+                String cacheNumber = message.substring(2);
+                Integer rowIndex = 0;
+                Integer columnIndex = 0;
+                rowIndex = Integer.valueOf(cacheNumber);
+                Statistic specificStat = (Statistic) statsTable.getItems().get(rowIndex);
+                Statistic generalStat = (Statistic) statsTable.getItems().get(4);
+                Integer specificValue, generalValue;
+
+                switch (type){
+                    case "I":
+                        specificValue = specificStat.getInvalidations();
+                        generalValue = generalStat.getInvalidations();
+                        specificStat.setInvalidations(specificValue + 1);
+                        generalStat.setInvalidations(generalValue + 1);
                         break;
-                    case "Cache hit!":
-                        rowIndex = 1;
+                    case "R":
+                        specificValue = specificStat.getReadRequests();
+                        generalValue = generalStat.getReadRequests();
+                        specificStat.setReadRequests(specificValue + 1);
+                        generalStat.setReadRequests(generalValue + 1);
                         break;
-                    case "Read request":
-                        rowIndex = 2;
+                    case "W":
+                        specificValue = specificStat.getWriteRequest();
+                        generalValue = generalStat.getWriteRequest();
+                        specificStat.setWriteRequest(specificValue + 1);
+                        generalStat.setWriteRequest(generalValue + 1);
                         break;
-                    case "Write request":
-                        rowIndex = 3;
+                    case "M":
+                        specificValue = specificStat.getCacheMisses();
+                        generalValue = generalStat.getCacheMisses();
+                        specificStat.setCacheMisses(specificValue + 1);
+                        generalStat.setCacheMisses(generalValue + 1);
+                        break;
+                    case "H":
+                        specificValue = specificStat.getCacheHits();
+                        generalValue = generalStat.getCacheHits();
+                        specificStat.setCacheHits(specificValue + 1);
+                        generalStat.setCacheHits(generalValue + 1);
                         break;
                 }
 
-                VBox statsBox = (VBox) root.getChildren().get(7);
-                TableView<Statistic> statsTable = (TableView<Statistic>) statsBox.getChildren().get(1);
-                Statistic statistic = (Statistic) statsTable.getItems().get(rowIndex);
-                Integer oldValue = statistic.getValue();
-                statistic.setValue(oldValue + 1);
                 statsTable.refresh();
             }
         });

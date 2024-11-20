@@ -1,9 +1,8 @@
-import java.util.Scanner;
+import java.io.IOException;
 
 public class Multiprocessor {
     private PE[] processors = new PE[4];
     private final Object stepperLock = new Object(); // Bloqueo compartido
-    private Memory memory;
 
     public void loadPrograms(String[][] programs) {
         // Instancia y carga cada PE con su propio programa
@@ -11,8 +10,7 @@ public class Multiprocessor {
             processors[i] = new PE((byte) i, stepperLock);
             processors[i].loadProgram(programs[i]);
         }
-        memory = new Memory();
-        memory.getMemoryInfo();
+        new Memory();
     }
 
     public void execute() {
@@ -22,18 +20,15 @@ public class Multiprocessor {
             threads[i].start(); // Inicia cada PE en su propio hilo
         }
 
-        Scanner scanner = new Scanner(System.in);
-
         while (true) {
-            System.out.println("Presiona Enter para avanzar todos los PEs");
-            scanner.nextLine(); // Espera la entrada del usuario
+            try {
+                SocketHandler.receiveMessage(); // Recibe mensaje del cliente
 
-            synchronized (stepperLock) {
-                stepperLock.notifyAll(); // Permite que todos los PEs avancen
-                memory.getMemoryInfo();
-                for (int i = 0; i < 4; i++) {
-                    processors[i].getCache().getCacheInfo();
+                synchronized (stepperLock) {
+                    stepperLock.notifyAll(); // Permite que todos los PEs avancen
                 }
+            } catch (IOException e) {
+                System.err.println("Error en la comunicación por socket: " + e.getMessage());
             }
         }
     }

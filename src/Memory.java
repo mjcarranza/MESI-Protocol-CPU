@@ -1,23 +1,23 @@
 public class Memory implements BusObserver {
 
-    private byte memoryLenght = 4;
-    private byte memoryIndex = 0;
+    private short memoryLenght = 256;
+    private short memoryIndex = 0;
     private MemoryLine[] memoryLine = new MemoryLine[memoryLenght];
     private boolean isAddressUpdateNeeded = true;
     private boolean isDataUpdateNeeded = true;
-    private int millisecondsSearchingMemoryLine = 500;
+    private int millisecondsSearchingMemoryLine = 1000;
 
     public Memory() {
-        for (byte i = 0; i < memoryLenght; i++) {
+        for (short i = 0; i < memoryLenght; i++) {
             memoryLine[i] = new MemoryLine();
         }
         Bus.addBusObserver(this);
     }
 
-    private MemoryLine searchAddressInMemory(byte address, boolean isForSimulation) {
+    private MemoryLine searchAddressInMemory(short address, boolean isForSimulation) {
         int milliseconds = 0;
 
-        for (byte i = 0; i < memoryLenght; i++) {
+        for (short i = 0; i < memoryLenght; i++) {
             milliseconds += millisecondsSearchingMemoryLine;
             if (memoryLine[i].getAddress() == address) {
                 if (isForSimulation) {
@@ -31,7 +31,7 @@ public class Memory implements BusObserver {
         return null;
     }
 
-    private void addAddressToMemory(byte address) {
+    private void addAddressToMemory(short address) {
         if (memoryIndex == memoryLenght) {
             System.out.println("Error: Not enough memory space");
             System.exit(0);
@@ -69,11 +69,4 @@ public class Memory implements BusObserver {
         isAddressUpdateNeeded = false;
     }
 
-    public void getMemoryInfo() {
-        for (byte i = 0; i < memoryLenght; i++) {
-            System.out.print(memoryLine[i].getAddress() + " | ");
-            System.out.println(memoryLine[i].getData());
-        }
-        System.out.println("-------------------");
-    }
 }

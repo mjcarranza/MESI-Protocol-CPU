@@ -1,13 +1,13 @@
 public class Bus {
-    private static int data = 0;
-    private static byte address = 0;
+    private static long data = 0;
+    private static short address = 0;
     private static boolean shared = false;
 
     private static byte ObserversNumber = 5;
     private static byte ObserversConnected = 0;
     private static BusObserver[] busObservers = new BusObserver[ObserversNumber];
 
-    private static int millisecondsUsingBus = 250;
+    private static int millisecondsUsingBus = 1000;
 
     private static final Object memoryAccessLock = new Object(); // Bloqueo para operaciones de memoria
 
@@ -37,7 +37,7 @@ public class Bus {
     }
 
     // Setters
-    public static void setData(int data, byte cacheID) {
+    public static void setData(long data, byte cacheID) {
         if (cacheID == -1) {
             SimulationHandler.simulateBehavior("BDM", millisecondsUsingBus);
         } else {
@@ -47,7 +47,7 @@ public class Bus {
         notifyDataChange();
     }
 
-    public static void setAddress(byte address, byte cacheID) {
+    public static void setAddress(short address, byte cacheID) {
         if (cacheID == -1) {
             SimulationHandler.simulateBehavior("BAM", millisecondsUsingBus);
         } else {
@@ -68,11 +68,11 @@ public class Bus {
     }
 
     // Getters
-    public static int getData() {
+    public static long getData() {
         return data;
     }
 
-    public static byte getAddress() {
+    public static short getAddress() {
         return address;
     }
 

@@ -1,5 +1,5 @@
 public class PE implements Runnable {
-    private int[] registers = new int[4]; // Inicializa los registros
+    private long[] registers = new long[4]; // Inicializa los registros
     private int programCounter;
     private String[] program;
     private byte id;
@@ -19,9 +19,6 @@ public class PE implements Runnable {
 
     public void execute() {
         while (programCounter < program.length) {
-            // System.out.println("Presiona Enter para ejecutar la instrucción " +
-            // programCounter);
-            // scanner.nextLine(); // Espera a que el usuario presione Enter
             System.out.println(programCounter);
             synchronized (stepperLock) {
                 try {
@@ -48,12 +45,12 @@ public class PE implements Runnable {
                     int regNum = Integer.parseInt(parts[1].substring(3));
                     int addr = Integer.parseInt(parts[2]);
                     if (opcode.equals("LOAD")) {
-                        read((byte) addr);
-                        CacheLine cacheLineSearched = cache.searchAddressInCache((byte) addr, false);
+                        read((short) addr);
+                        CacheLine cacheLineSearched = cache.searchAddressInCache((short) addr, false);
                         registers[regNum] = cacheLineSearched.getData();
                         System.out.println("0x" + addr + " (" + cacheLineSearched.getData() + ") >>> REG" + regNum);
                     } else { // STORE
-                        write((byte) addr, (int) registers[regNum]);
+                        write((short) addr, registers[regNum]);
                         System.out.println("REG" + regNum + " (" + registers[regNum] + ") >>> 0x" + addr);
                     }
                 }
@@ -102,11 +99,11 @@ public class PE implements Runnable {
         System.out.println("Finalizando PE " + id);
     }
 
-    public void read(byte address) {
+    public void read(short address) {
         cache.readCacheLine(address, false);
     }
 
-    public void write(byte address, int data) {
+    public void write(short address, long data) {
         cache.writeCacheLine(address, data);
     }
 

@@ -1,13 +1,13 @@
 public class Cache implements BusObserver {
 
     private byte cacheID;
-    private byte cacheLenght = 2;
+    private byte cacheLenght = 8;
     private byte cacheIndex = 0;
     private CacheLine[] cacheLine = new CacheLine[cacheLenght];
     private boolean isAddressUpdateNeeded = true;
     private boolean isDataUpdateNeeded = true;
     private boolean isSearchingOutside = false;
-    private int millisecondsSearchingCacheLine = 500;
+    private int millisecondsSearchingCacheLine = 1000;
 
     public Cache(byte cacheID) {
         this.cacheID = cacheID;
@@ -18,7 +18,7 @@ public class Cache implements BusObserver {
         }
     }
 
-    public void readCacheLine(byte address, boolean isWriting) {
+    public void readCacheLine(short address, boolean isWriting) {
         CacheLine cacheLineSearched = searchAddressInCache(address, true);
         if (!isWriting)
             SimulationHandler.simulateBehavior("SR" + cacheID, 0);
@@ -30,7 +30,7 @@ public class Cache implements BusObserver {
             searchAddressOutside(address); // Es Invalido
     }
 
-    public CacheLine searchAddressInCache(byte address, boolean isForSimulation) {
+    public CacheLine searchAddressInCache(short address, boolean isForSimulation) {
         int milliseconds = 0;
 
         for (byte i = 0; i < cacheLenght; i++) {
@@ -48,19 +48,19 @@ public class Cache implements BusObserver {
         return null;
     }
 
-    private void addAddressToCache(byte address) {
+    private void addAddressToCache(short address) {
         cacheLine[cacheIndex].setAll('I', address, 0);
         cacheIndex = (cacheIndex == cacheLenght) ? 0 : cacheIndex++;
     }
 
-    private void searchAddressOutside(byte address) {
+    private void searchAddressOutside(short address) {
         isSearchingOutside = true;
         isAddressUpdateNeeded = false;
         Bus.setAddress(address, cacheID);
         isAddressUpdateNeeded = true;
     }
 
-    public void writeCacheLine(byte address, int data) {
+    public void writeCacheLine(short address, long data) {
         readCacheLine(address, true);
         SimulationHandler.simulateBehavior("SW" + cacheID, 0);
         CacheLine cacheLineSearched = searchAddressInCache(address, false);
@@ -126,15 +126,5 @@ public class Cache implements BusObserver {
             }
             isSearchingOutside = false;
         }
-    }
-
-    public void getCacheInfo() {
-        System.out.println("Cache #" + cacheID + ": ");
-        for (byte i = 0; i < cacheLenght; i++) {
-            System.out.print(cacheLine[i].getState() + " | ");
-            System.out.print(cacheLine[i].getAddress() + " | ");
-            System.out.println(cacheLine[i].getData());
-        }
-        System.out.println("-------------------");
     }
 }

@@ -2,9 +2,9 @@ public class CacheLine {
 
     private byte cacheLineID;
     private char state = 'I';
-    private byte address;
-    private int data;
-    private int millisecondsEditingCacheLine = 500;
+    private short address;
+    private long data;
+    private int millisecondsEditingCacheLine = 1000;
 
     public CacheLine(byte cacheLineID) {
         this.cacheLineID = cacheLineID;
@@ -17,19 +17,19 @@ public class CacheLine {
                 millisecondsEditingCacheLine);
     }
 
-    public void setAddress(byte address) {
+    public void setAddress(short address) {
         this.address = address;
         SimulationHandler.simulateBehavior("C" + cacheLineID + ": " + getState() + "|" + getAddress() + "|" + getData(),
                 millisecondsEditingCacheLine);
     }
 
-    public void setData(int data) {
+    public void setData(long data) {
         this.data = data;
         SimulationHandler.simulateBehavior("C" + cacheLineID + ": " + getState() + "|" + getAddress() + "|" + getData(),
                 millisecondsEditingCacheLine);
     }
 
-    public void setAll(char state, byte address, int data) {
+    public void setAll(char state, short address, long data) {
         this.state = state;
         this.address = address;
         this.data = data;
@@ -42,11 +42,11 @@ public class CacheLine {
         return state;
     }
 
-    public byte getAddress() {
+    public short getAddress() {
         return address;
     }
 
-    public int getData() {
+    public long getData() {
         return data;
     }
 
